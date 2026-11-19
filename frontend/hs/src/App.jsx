@@ -1,25 +1,65 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Navbar from './components/Navbar';
+
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import RestaurantDetail from './pages/RestaurantDetail';
+import Cart from './pages/Cart';
+import MyOrders from './pages/MyOrders';
+import OrderDetail from './pages/OrderDetail';
+import OwnerDashboard from './pages/owner/OwnerDashboard';
+import RestaurantForm from './pages/owner/RestaurantForm';
+import ManageMenu from './pages/owner/ManageMenu';
+import RestaurantOrders from './pages/owner/RestaurantOrders';
+import DeliveryDashboard from './pages/delivery/DeliveryDashboard';
 
 function App() {
-  const [message, setMessage] = useState("");
+    return (
+        <AuthProvider>
+            <CartProvider>
+                <BrowserRouter>
+                    <Navbar />
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/restaurants/:id" element={<RestaurantDetail />} />
 
-  useEffect(() => {
-    axios.get("http://localhost:5000/")
-      .then((response) => {
-        setMessage(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
+                        <Route path="/cart" element={
+                            <ProtectedRoute roles={['customer']}><Cart /></ProtectedRoute>
+                        } />
+                        <Route path="/my-orders" element={
+                            <ProtectedRoute roles={['customer']}><MyOrders /></ProtectedRoute>
+                        } />
+                        <Route path="/orders/:id" element={
+                            <ProtectedRoute><OrderDetail /></ProtectedRoute>
+                        } />
 
-  return (
-    <div>
-      <h1>MERN Stack Project</h1>
-      <h2>{message}</h2>
-    </div>
-  );
+                        <Route path="/owner" element={
+                            <ProtectedRoute roles={['owner']}><OwnerDashboard /></ProtectedRoute>
+                        } />
+                        <Route path="/owner/new-restaurant" element={
+                            <ProtectedRoute roles={['owner']}><RestaurantForm /></ProtectedRoute>
+                        } />
+                        <Route path="/owner/restaurants/:restaurantId/menu" element={
+                            <ProtectedRoute roles={['owner']}><ManageMenu /></ProtectedRoute>
+                        } />
+                        <Route path="/owner/restaurants/:restaurantId/orders" element={
+                            <ProtectedRoute roles={['owner']}><RestaurantOrders /></ProtectedRoute>
+                        } />
+
+                        <Route path="/delivery" element={
+                            <ProtectedRoute roles={['delivery']}><DeliveryDashboard /></ProtectedRoute>
+                        } />
+                    </Routes>
+                </BrowserRouter>
+            </CartProvider>
+        </AuthProvider>
+    );
 }
 
 export default App;

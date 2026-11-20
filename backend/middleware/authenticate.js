@@ -15,20 +15,22 @@ export const authenticate = asyncHandler(async (req, res, next) => {
         throw new Error('Not authorized, no token provided');
     }
 
+    let decoded;
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = await User.findById(decoded.id).select('-password');
-
-        if (!req.user) {
-            res.status(401);
-            throw new Error('Not authorized, user no longer exists');
-        }
-
-        next();
+        decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (error) {
         res.status(401);
         throw new Error('Not authorized, token invalid or expired');
     }
+
+    req.user = await User.findById(decoded.id).select('-password');
+
+    if (!req.user) {
+        res.status(401);
+        throw new Error('Not authorized, user no longer exists');
+    }
+
+    next();
 });
 
 export const authorize = (...roles) => {

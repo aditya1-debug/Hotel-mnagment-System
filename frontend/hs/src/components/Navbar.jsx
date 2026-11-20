@@ -33,6 +33,7 @@ function Navbar() {
 
                 {user?.role === 'owner' && <Link to="/owner">Owner Dashboard</Link>}
                 {user?.role === 'delivery' && <Link to="/delivery">Deliveries</Link>}
+                {user?.role === 'admin' && <Link to="/admin">Admin Dashboard</Link>}
 
                 {user && (
                     <>

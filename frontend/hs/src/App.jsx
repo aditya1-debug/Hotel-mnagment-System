@@ -16,6 +16,7 @@ import RestaurantForm from './pages/owner/RestaurantForm';
 import ManageMenu from './pages/owner/ManageMenu';
 import RestaurantOrders from './pages/owner/RestaurantOrders';
 import DeliveryDashboard from './pages/delivery/DeliveryDashboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
 
 function App() {
     return (
@@ -54,6 +55,10 @@ function App() {
 
                         <Route path="/delivery" element={
                             <ProtectedRoute roles={['delivery']}><DeliveryDashboard /></ProtectedRoute>
+                        } />
+
+                        <Route path="/admin" element={
+                            <ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>
                         } />
                     </Routes>
                 </BrowserRouter>
